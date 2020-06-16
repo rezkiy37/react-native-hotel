@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
 import { createStackNavigator } from '@react-navigation/stack'
+import { ProfileScreen } from './ProfileScreen'
 
 const ProfileStack = createStackNavigator()
 
-export function ProfileStackScreen({ ProfileScreen }) {
+export function ProfileStackScreen() {
     return (
         <ProfileStack.Navigator screenOptions={{
             headerStyle: {

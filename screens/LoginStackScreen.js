@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
 import { createStackNavigator } from '@react-navigation/stack'
+import { LoginScreen } from './LoginScreen'
 
 const LoginStack = createStackNavigator()
 
-export function LoginStackScreen({ LoginScreen }) {
+export function LoginStackScreen() {
     return (
         <LoginStack.Navigator screenOptions={{
             headerStyle: {

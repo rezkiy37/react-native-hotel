@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
+import { HomeScreen } from './HomeScreen'
 
 import { createStackNavigator } from '@react-navigation/stack'
 
 const HomeStack = createStackNavigator()
 
-export function HomeStackScreen({ HomeScreen }) {
+export function HomeStackScreen() {
     return (
         <HomeStack.Navigator screenOptions={{
             headerStyle: {

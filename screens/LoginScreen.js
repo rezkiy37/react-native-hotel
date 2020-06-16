@@ -1,16 +1,33 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
+import { AuthContext } from '../components/Context'
 
 
-export function LoginScreen({ setLogin }) {
-    const loginHandler = () => {
-        setLogin('nobf')
+export function LoginScreen() {
+
+    const { signIn, signUp } = useContext(AuthContext)
+
+    const signInHandler = () => {
+        signIn('user', 'qwerty')
+    }
+
+    const signUpHandler = () => {
+        signUp('user2', 'qwerty2')
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.text}>App! Login!</Text>
-            <Button title='LogIn' color='red' onPress={loginHandler} />
+            <Button
+                title='SignIn'
+                color='red'
+                onPress={signInHandler}
+            />
+            <Button
+                title='SignUp'
+                color='blue'
+                onPress={signUpHandler}
+            />
         </View>
     )
 }

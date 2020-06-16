@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 
 import { createStackNavigator } from '@react-navigation/stack'
+import { SettingsScreen } from './SettingsScreen'
 
 const SettingsStack = createStackNavigator()
 
-export function SettingsStackScreen({ SettingsScreen }) {
+export function SettingsStackScreen() {
     return (
         <SettingsStack.Navigator screenOptions={{
             headerStyle: {
