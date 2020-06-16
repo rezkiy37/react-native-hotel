@@ -5,16 +5,21 @@ import { AuthContext } from '../components/Context'
 
 export function ProfileScreen() {
 
-    const { signOut } = useContext(AuthContext)
+    const { signOut, getActiveUser } = useContext(AuthContext)
 
     const signOutHandler = () => {
         signOut()
     }
 
+    const setActiveUser = () => {
+        let user = getActiveUser()
+        return user
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.text}>App! Profile!</Text>
+            <Text style={styles.text}>{setActiveUser()}</Text>
             <Button
                 title='SignOut'
                 onPress={signOutHandler}

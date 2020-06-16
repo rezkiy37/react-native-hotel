@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler'
-import React, { useEffect, useMemo, useReducer } from 'react'
+import React, { useEffect, useMemo, useReducer, useState } from 'react'
 
 import { AuthContext } from './components/Context'
 import { StyleSheet, AsyncStorage } from 'react-native'
@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native'
 
 import { TabScreen } from './Navigation/TabScreen'
 import { Loading } from './screens/Loading'
-import { LoginStackScreen } from './screens/LoginStackScreen'
+import { AuthoStackScreen } from './screens/AuthoStackScreen'
 import { HomeStackScreen } from './screens/HomeStackScreen'
 import { ProfileStackScreen } from './screens/ProfileStackScreen'
 import { SettingsStackScreen } from './screens/SettingsStackScreen'
@@ -18,9 +18,12 @@ import { SettingsStackScreen } from './screens/SettingsStackScreen'
 //App component
 export default function App() {
 
+  const [activeUser, setActiveUser] = useState(null)
+
   const initialLoginState = {
     isLoading: true,
     userName: null,
+    userPassword: null,
     userToken: null
   }
 
@@ -35,15 +38,15 @@ export default function App() {
         return {
           ...prevState,
           isLoading: false,
-          userToken: action.token
+          userName: action.username
         }
 
       case LOGIN:
         return {
           ...prevState,
           isLoading: false,
-          userName: action.id,
-          userToken: action.token,
+          userName: action.username,
+          userPassword: action.password,
         }
 
       case LOGOUT:
@@ -51,6 +54,7 @@ export default function App() {
           ...prevState,
           isLoading: false,
           userName: null,
+          userPassword: null,
           userToken: null,
         }
 
@@ -58,8 +62,9 @@ export default function App() {
         return {
           ...prevState,
           isLoading: false,
-          userName: action.id,
-          userToken: action.token,
+          userName: action.username,
+          userPassword: action.password,
+          //userToken: action.token,
         }
     }
   }
@@ -67,67 +72,108 @@ export default function App() {
   const [loginState, dispatch] = useReducer(loginReducer, initialLoginState)
 
   const authContext = useMemo(() => ({
-    signIn: async (userName, password) => {
-      let userToken
-      userToken = null
+    signIn: async (username, password) => {
+      console.log(username)
+      console.log(password)
+      let keys = []
 
-      if (userName == 'user' && password == 'qwerty') {
-        try {
-          console.log('Log!')
+      try {
+        keys = await AsyncStorage.getAllKeys()
 
-          userToken = 'exampleToken'
-          await AsyncStorage.setItem('userToken', userToken)
-        } catch (e) {
-          console.log(e)
+        for (let i = 0; i < keys.length; i++) {
+          let item = await AsyncStorage.getItem(keys[i])
+          item = await JSON.parse(item)
+          await console.log(item['username'])
+          await console.log(item['password'])
+
+          if (item['username'] == username && item['password'] == password) {
+            console.log('SignIn')
+            console.log(item['username'])
+            console.log(item['password'])
+
+            setActiveUser(username)
+            AsyncStorage.setItem('activeUser', username)
+          } else {
+            console.log('Not correct!')
+          }
         }
-      } else {
-        console.log('Error')
+      } catch (e) {
+        console.log(e)
       }
-
-      dispatch({ type: LOGIN, token: userToken })
     },
 
     signOut: async () => {
       try {
-        await AsyncStorage.removeItem('userToken')
+        await setActiveUser(null)
+        await AsyncStorage.removeItem('activeUser')
       } catch (e) {
         console.log(e)
       }
       dispatch({ type: LOGOUT })
     },
 
-    signUp: (userName, password) => {
-      console.log(userName, password)
-      dispatch({ type: REGISTER, isLoading: false, id: userName, token: password })
+    signUp: async (username, password) => {
+
+      let newUser = { username: username, password: password }
+      let keys = []
+
+      console.log(newUser)
+
+      try {
+        keys = await AsyncStorage.getAllKeys()
+        await AsyncStorage.setItem(`user${keys.length + 1}`, JSON.stringify(newUser))
+        await console.log('User Pair Data was saved!')
+
+        //await setActiveUser(username)
+
+        console.log(JSON.stringify(newUser))
+      } catch (e) {
+        console.log(e)
+      }
+
+      dispatch({ type: REGISTER, isLoading: false, username, password })
     },
+    getActiveUser: () => {
+      return activeUser
+    }
   }), [])
 
   useEffect(() => {
     setTimeout(async () => {
-      let userToken
-      userToken = null
+
+      let keys = []
+
       try {
-        userToken = await AsyncStorage.getItem('userToken')
+        keys = await AsyncStorage.getAllKeys()
+        await console.log('keys ' + keys.length)
+
+        let activeUser = await AsyncStorage.getItem('activeUser')
+
+        if (activeUser !== null) {
+          setActiveUser(activeUser)
+          dispatch({ type: RETRIEVE_TOKEN, username: activeUser })
+        } else {
+          setActiveUser(null)
+          dispatch({ type: RETRIEVE_TOKEN })
+        }
       } catch (e) {
         console.log(e)
       }
-      dispatch({ type: RETRIEVE_TOKEN, token: userToken })
     }, 1000);
   }, [])
-
 
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         {loginState.isLoading ? (
           <Loading />
-        ) : loginState.userToken ? (
+        ) : activeUser ? (
           <TabScreen
             HomeStackScreen={() => <HomeStackScreen />}
-            ProfileStackScreen={() => <ProfileStackScreen />}
+            ProfileStackScreen={() => <ProfileStackScreen activeUser={activeUser} />}
             SettingsStackScreen={() => <SettingsStackScreen />}
           />
-        ) : <LoginStackScreen />
+        ) : <AuthoStackScreen />
         }
       </NavigationContainer>
     </AuthContext.Provider>

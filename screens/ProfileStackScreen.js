@@ -16,9 +16,13 @@ export function ProfileStackScreen() {
                 fontWeight: 'bold'
             }
         }}>
-            <ProfileStack.Screen name="ProfileScreen" component={ProfileScreen} options={{
-                title: 'Profile'
-            }} />
+            <ProfileStack.Screen
+                name="ProfileScreen"
+                component={ProfileScreen}
+                options={{
+                    title: 'Profile'
+                }}
+            />
         </ProfileStack.Navigator>
     )
 }
