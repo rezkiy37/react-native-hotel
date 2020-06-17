@@ -1,21 +1,17 @@
 import React, { useState, useContext } from 'react'
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native'
 import { AuthContext } from '../components/Context'
 
 
 export function SignInScreen({ navigation }) {
 
-    const [data, setData] = useState({
-        username: '',
-        password: '',
-        isValidUsername: true,
-        isValidPassword: true
-    })
+    const [username, setUsername] = useState(null)
+    const [password, setPassword] = useState(null)
 
     const { signIn } = useContext(AuthContext)
 
     const signInHandler = () => {
-        signIn(data.username, data.password)
+        signIn(username, password)
     }
 
     const signUpHandler = () => {
@@ -23,63 +19,31 @@ export function SignInScreen({ navigation }) {
     }
 
     const usernameInputHandler = value => {
-        console.log(data.username)
-
-        if (value.trim().length >= 4) {
-            setData({
-                ...data,
-                username: value,
-                isValidUsername: true
-            })
-        } else {
-            setData({
-                ...data,
-                username: value,
-                isValidUsername: false
-            })
-        }
+        setUsername(value)
     }
 
     const passwordInputHandler = value => {
-        console.log(data.password)
-
-        if (value.trim().length >= 4) {
-            setData({
-                ...data,
-                password: value,
-                isValidPassword: true
-            })
-        } else {
-            setData({
-                ...data,
-                username: value,
-                isValidPassword: false
-            })
-        }
+        setPassword(value)
     }
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>App! Login!</Text>
+            <Text style={styles.text} >App! Login!</Text>
 
             <TextInput
                 style={styles.input}
                 placeholder='username'
-                onChangeText={usernameInputHandler}
+                onChangeText={value => usernameInputHandler(value)}
+                value={username}
             />
-            {data.isValidUsername ? null : (
-                <Text style={styles.errorText}>Is not valid</Text>
-            )}
 
             <TextInput
                 style={styles.input}
                 placeholder='password'
                 secureTextEntry={false}
-                onChangeText={passwordInputHandler}
+                onChangeText={value => passwordInputHandler(value)}
+                value={password}
             />
-            {data.isValidPassword ? null : (
-                <Text style={styles.errorText}>Is not valid</Text>
-            )}
 
             <Button
                 title='SignIn'
@@ -90,6 +54,12 @@ export function SignInScreen({ navigation }) {
                 title='SignUp'
                 color='blue'
                 onPress={signUpHandler}
+            />
+
+            <Button
+                title='Get username'
+                color='gray'
+                onPress={() => console.log(username, password)}
             />
         </View>
     )

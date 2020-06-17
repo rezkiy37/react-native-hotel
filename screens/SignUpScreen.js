@@ -3,61 +3,61 @@ import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native'
 import { AuthContext } from '../components/Context'
 
 
-export function SignUpScreen() {
+export function SignUpScreen({ navigation }) {
 
-    const [data, setData] = useState({
-        username: '',
-        password: '',
+    const [username, setUsername] = useState(null)
+    const [password, setPassword] = useState(null)
+    const [isValid, setIsValid] = useState({
         isValidUsername: false,
-        isValidPassword: false
+        isValidPassword: false,
     })
 
     const { signUp } = useContext(AuthContext)
 
-    const signUpHandler = () => {
-        if (data.isValidUsername && data.isValidPassword) {
-            console.log(data.username, data.password)
-
-            signUp(data.username, data.password)
-        } else {
-            Alert.alert('Irregular data')
-        }
-
-    }
-
     const usernameInputHandler = value => {
-        console.log(data.username)
-
+        setUsername(value)
         if (value.trim().length >= 4) {
-            setData({
-                ...data,
-                username: value,
+            setUsername(value)
+
+            setIsValid({
+                ...isValid,
                 isValidUsername: true
             })
         } else {
-            setData({
-                ...data,
-                username: value,
+            setUsername(value)
+
+            setIsValid({
+                ...isValid,
                 isValidUsername: false
             })
         }
     }
 
     const passwordInputHandler = value => {
-        console.log(data.password)
-
         if (value.trim().length >= 4) {
-            setData({
-                ...data,
-                password: value,
+            setPassword(value)
+
+            setIsValid({
+                ...isValid,
                 isValidPassword: true
             })
         } else {
-            setData({
-                ...data,
-                password: value,
+            setPassword(value)
+
+            setIsValid({
+                ...isValid,
                 isValidPassword: false
             })
+        }
+    }
+
+    const signUpHandler = () => {
+        if (isValid.isValidUsername && isValid.isValidPassword) {
+            signUp(username, password)
+
+            navigation.navigate('SignInScreen')
+        } else {
+            Alert.alert('Irregular data')
         }
     }
 
@@ -69,8 +69,9 @@ export function SignUpScreen() {
                 style={styles.input}
                 placeholder='username'
                 onChangeText={usernameInputHandler}
+                value={username}
             />
-            {data.isValidUsername ? null : (
+            {isValid.isValidUsername ? null : (
                 <Text style={styles.errorText}>Is not valid</Text>
             )}
 
@@ -78,8 +79,9 @@ export function SignUpScreen() {
                 style={styles.input}
                 placeholder='password'
                 onChangeText={passwordInputHandler}
+                value={password}
             />
-            {data.isValidPassword ? null : (
+            {isValid.isValidPassword ? null : (
                 <Text style={styles.errorText}>Is not valid</Text>
             )}
 

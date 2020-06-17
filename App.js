@@ -2,7 +2,7 @@ import 'react-native-gesture-handler'
 import React, { useEffect, useMemo, useReducer, useState } from 'react'
 
 import { AuthContext } from './components/Context'
-import { StyleSheet, AsyncStorage } from 'react-native'
+import { StyleSheet, AsyncStorage, Alert } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 
 import { TabScreen } from './Navigation/TabScreen'
@@ -19,63 +19,13 @@ import { SettingsStackScreen } from './screens/SettingsStackScreen'
 export default function App() {
 
   const [activeUser, setActiveUser] = useState(null)
-
-  const initialLoginState = {
-    isLoading: true,
-    userName: null,
-    userPassword: null,
-    userToken: null
-  }
-
-  const RETRIEVE_TOKEN = 'RETRIEVE_TOKEN'
-  const LOGIN = 'LOGIN'
-  const LOGOUT = 'LOGOUT'
-  const REGISTER = 'REGISTER'
-
-  const loginReducer = (prevState, action) => {
-    switch (action.type) {
-      case RETRIEVE_TOKEN:
-        return {
-          ...prevState,
-          isLoading: false,
-          userName: action.username
-        }
-
-      case LOGIN:
-        return {
-          ...prevState,
-          isLoading: false,
-          userName: action.username,
-          userPassword: action.password,
-        }
-
-      case LOGOUT:
-        return {
-          ...prevState,
-          isLoading: false,
-          userName: null,
-          userPassword: null,
-          userToken: null,
-        }
-
-      case REGISTER:
-        return {
-          ...prevState,
-          isLoading: false,
-          userName: action.username,
-          userPassword: action.password,
-          //userToken: action.token,
-        }
-    }
-  }
-
-  const [loginState, dispatch] = useReducer(loginReducer, initialLoginState)
+  const [isCorrectUser, setIsCorrectUser] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   const authContext = useMemo(() => ({
     signIn: async (username, password) => {
-      console.log(username)
-      console.log(password)
       let keys = []
+      let items = []
 
       try {
         keys = await AsyncStorage.getAllKeys()
@@ -83,18 +33,21 @@ export default function App() {
         for (let i = 0; i < keys.length; i++) {
           let item = await AsyncStorage.getItem(keys[i])
           item = await JSON.parse(item)
-          await console.log(item['username'])
-          await console.log(item['password'])
 
-          if (item['username'] == username && item['password'] == password) {
-            console.log('SignIn')
-            console.log(item['username'])
-            console.log(item['password'])
+          await items.push(item)
+          items = await items.filter(item => item['username'] == username && item['password'] == password)
 
-            setActiveUser(username)
-            AsyncStorage.setItem('activeUser', username)
-          } else {
-            console.log('Not correct!')
+          if (items.length !== 0) {
+            await setActiveUser(username)
+            await AsyncStorage.setItem('activeUser', username)
+          }
+        }
+
+        if (!activeUser) {
+          await setIsCorrectUser(false)
+
+          if (!isCorrectUser) {
+            await Alert.alert('error')
           }
         }
       } catch (e) {
@@ -109,7 +62,6 @@ export default function App() {
       } catch (e) {
         console.log(e)
       }
-      dispatch({ type: LOGOUT })
     },
 
     signUp: async (username, password) => {
@@ -123,19 +75,15 @@ export default function App() {
         keys = await AsyncStorage.getAllKeys()
         await AsyncStorage.setItem(`user${keys.length + 1}`, JSON.stringify(newUser))
         await console.log('User Pair Data was saved!')
-
-        //await setActiveUser(username)
-
-        console.log(JSON.stringify(newUser))
       } catch (e) {
         console.log(e)
       }
-
-      dispatch({ type: REGISTER, isLoading: false, username, password })
     },
+
     getActiveUser: () => {
       return activeUser
-    }
+    },
+
   }), [])
 
   useEffect(() => {
@@ -151,11 +99,11 @@ export default function App() {
 
         if (activeUser !== null) {
           setActiveUser(activeUser)
-          dispatch({ type: RETRIEVE_TOKEN, username: activeUser })
         } else {
           setActiveUser(null)
-          dispatch({ type: RETRIEVE_TOKEN })
         }
+
+        await setIsLoading(false)
       } catch (e) {
         console.log(e)
       }
@@ -165,12 +113,12 @@ export default function App() {
   return (
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
-        {loginState.isLoading ? (
+        {isLoading ? (
           <Loading />
         ) : activeUser ? (
           <TabScreen
             HomeStackScreen={() => <HomeStackScreen />}
-            ProfileStackScreen={() => <ProfileStackScreen activeUser={activeUser} />}
+            ProfileStackScreen={() => <ProfileStackScreen />}
             SettingsStackScreen={() => <SettingsStackScreen />}
           />
         ) : <AuthoStackScreen />
