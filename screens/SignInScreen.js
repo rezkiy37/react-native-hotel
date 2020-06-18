@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react'
-import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput } from 'react-native'
 import { AuthContext } from '../components/Context'
 
 
@@ -50,16 +50,11 @@ export function SignInScreen({ navigation }) {
                 color='red'
                 onPress={signInHandler}
             />
+
             <Button
                 title='SignUp'
                 color='blue'
                 onPress={signUpHandler}
-            />
-
-            <Button
-                title='Get username'
-                color='gray'
-                onPress={() => console.log(username, password)}
             />
         </View>
     )

@@ -9,8 +9,11 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
     return (
         <Tab.Navigator
             initialRouteName="Home"
-            activeColor="#fff"
-            style={{ backgroundColor: '#ccc' }}
+        // tabBarOptions={{
+        //     activeTintColor: 'tomato',
+        //     inactiveTintColor: 'gray',
+        //     activeBackgroundColor: 'red'
+        // }}
         >
             <Tab.Screen
                 name="Home"
@@ -18,7 +21,7 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 options={{
                     tabBarLabel: 'Home',
                     tabBarIcon: () => (
-                        <Ionicons name="ios-home" color='white' size={24} />
+                        <Ionicons name="ios-home" color='white' size={22} />
                     ),
                 }}
             />
@@ -29,7 +32,7 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 options={{
                     tabBarLabel: 'Profile',
                     tabBarIcon: () => (
-                        <Ionicons name="md-person" color='white' size={24} />
+                        <Ionicons name="md-person" color='white' size={22} />
                     ),
                 }}
             />
@@ -40,7 +43,7 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 options={{
                     tabBarLabel: 'Settings',
                     tabBarIcon: () => (
-                        <Ionicons name="md-settings" color='white' size={24} />
+                        <Ionicons name="md-settings" color='white' size={22} />
                     ),
                 }}
             />

@@ -16,6 +16,11 @@ export function ProfileScreen() {
         return user
     }
 
+    const createBalansHandler = () => {
+        let user = getActiveUser()
+        console.log(user)
+    }
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>App! Profile!</Text>
@@ -23,6 +28,10 @@ export function ProfileScreen() {
             <Button
                 title='SignOut'
                 onPress={signOutHandler}
+            />
+            <Button
+                title='Create balans'
+                onPress={createBalansHandler}
             />
         </View>
     )

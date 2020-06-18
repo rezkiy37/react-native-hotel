@@ -90,7 +90,6 @@ export function SignUpScreen({ navigation }) {
                 color='blue'
                 onPress={signUpHandler}
             />
-
         </View>
     )
 }
