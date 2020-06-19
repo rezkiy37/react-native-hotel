@@ -22,13 +22,15 @@ export default function App() {
     isLoading: true,
     isCorrectUser: false,
     activeUser: null,
+    activeUserToken: null,
+    activeUserBalance: null
   }
 
   const RETRIEVE_TOKEN = 'RETRIEVE_TOKEN'
   const LOGIN = 'LOGIN'
   const LOGOUT = 'LOGOUT'
   const REGISTER = 'REGISTER'
-  const CHANGE = 'CHANGE'
+  const SET_BALANCE = 'SET_BALANCES'
 
   const loginReducer = (prevState, action) => {
     switch (action.type) {
@@ -36,7 +38,9 @@ export default function App() {
         return {
           ...prevState,
           isLoading: false,
-          activeUser: action.activeUser
+          activeUser: action.activeUser,
+          activeUserToken: action.activeUserToken,
+          activeUserBalance: action.activeUserBalance
         }
 
       case LOGIN:
@@ -45,6 +49,8 @@ export default function App() {
           isLoading: false,
           isCorrectUser: true,
           activeUser: action.activeUser,
+          activeUserToken: action.activeUserToken,
+          activeUserBalance: action.activeUserBalance
         }
 
       case LOGOUT:
@@ -53,20 +59,23 @@ export default function App() {
           isLoading: false,
           isCorrectUser: false,
           activeUser: null,
+          activeUserToken: null,
+          activeUserBalance: null
         }
 
       case REGISTER:
         return {
           ...prevState,
           isLoading: false,
-          activeUser: null,
           isCorrectUser: false,
+          activeUser: null,
+          activeUserToken: null
         }
 
-      case CHANGE:
+      case SET_BALANCE:
         return {
           ...prevState,
-          isCorrectUser: action.isCorrectUser,
+          activeUserBalance: action.activeUserBalance
         }
     }
   }
@@ -88,12 +97,20 @@ export default function App() {
             if (item) {
               item = JSON.parse(item)
 
+              console.log(item)
+
               if (item['username'] == username && item['password'] == password) {
                 i = keys.length + 1
 
-                dispatch({ type: LOGIN, activeUser: item['username'] })
+                dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['count'] })
+                console.log(loginState)
 
-                AsyncStorage.setItem('activeUser', username)
+                let userData = { username, activeUserToken: item['token'], activeUserBalance: item['count'] }
+                userData = JSON.stringify(userData)
+
+                console.log(userData)
+
+                AsyncStorage.setItem('activeUser', userData)
               }
             }
           }
@@ -116,15 +133,41 @@ export default function App() {
 
     signUp: async (username, password) => {
 
-      let newUser = { username: username, password: password }
       let keys = []
-
-      console.log(newUser)
+      let newUser
 
       try {
         keys = await AsyncStorage.getAllKeys()
+        newUser = { username, password, token: `user${keys.length + 1}` }
+
+        await console.log(newUser)
+
         await AsyncStorage.setItem(`user${keys.length + 1}`, JSON.stringify(newUser))
         await console.log('User Pair Data was saved!')
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    createBalance: async (token, count) => {
+      let balance = { count }
+      let balanceToState = balance.count
+      balance = JSON.stringify(balance)
+      try {
+        await AsyncStorage.mergeItem(token, balance)
+        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceToState })
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    addFunds: async (token, count) => {
+      let balance = { count }
+      let balanceToState = balance.count
+      balance = JSON.stringify(balance)
+      try {
+        await AsyncStorage.mergeItem(token, balance)
+        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceToState })
       } catch (e) {
         console.log(e)
       }
@@ -133,20 +176,43 @@ export default function App() {
     getActiveUser: () => {
       return loginState.activeUser
     },
+
+    getToken: () => {
+      return loginState.activeUserToken
+    },
+
+    getBalance: () => {
+      return loginState.activeUserBalance
+    },
+
+
+    checkState: () => {
+      console.log(loginState)
+    },
+
   }), [loginState])
 
   useEffect(() => {
+    console.log(loginState.activeUserBalance)
     setTimeout(async () => {
       let keys = []
+      let activeUser
 
       try {
         keys = await AsyncStorage.getAllKeys()
-        await console.log('keys ' + keys.length)
 
-        let activeUser = await AsyncStorage.getItem('activeUser')
+        activeUser = await AsyncStorage.getItem('activeUser')
+        activeUser = await JSON.parse(activeUser)
+
+        await console.log(activeUser)
 
         if (activeUser !== null) {
-          dispatch({ type: RETRIEVE_TOKEN, activeUser })
+          dispatch({
+            type: RETRIEVE_TOKEN,
+            activeUser: activeUser['username'],
+            activeUserToken: activeUser['activeUserToken'],
+            activeUserBalance: activeUser['activeUserBalance']
+          })
         } else {
           dispatch({ type: RETRIEVE_TOKEN })
         }

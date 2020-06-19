@@ -8,7 +8,7 @@ export function SignInScreen({ navigation }) {
     const [username, setUsername] = useState(null)
     const [password, setPassword] = useState(null)
 
-    const { signIn } = useContext(AuthContext)
+    const { signIn, checkState } = useContext(AuthContext)
 
     const signInHandler = () => {
         signIn(username, password)
@@ -26,8 +26,17 @@ export function SignInScreen({ navigation }) {
         setPassword(value)
     }
 
+    const checkHandler = () => {
+        checkState()
+    }
+
+
     return (
         <View style={styles.container}>
+            <Button
+                title='Check'
+                onPress={checkHandler}
+            />
             <Text style={styles.text} >App! Login!</Text>
 
             <TextInput
