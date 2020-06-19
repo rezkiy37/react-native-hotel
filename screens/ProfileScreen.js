@@ -110,7 +110,7 @@ export function ProfileScreen() {
                     />
                 </View>
             ) : (
-                    <View>
+                    <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
                         <TextInput
                             style={{ ...styles.input }}
                             value={inputValue}
@@ -119,9 +119,10 @@ export function ProfileScreen() {
                             placeholder='Enter amount'
                             placeholderTextColor='gray'
                         />
-                        <Text style={isCorrectValue ? { color: '#000' } : styles.errorText}>The value must be integer</Text>
+                        <Text style={isCorrectValue ? styles.notErrorText : styles.errorText}>The value must be integer</Text>
                         <Button
                             title='Create balans'
+                            color='green'
                             onPress={createBalanceHandler}
                         />
                     </View>

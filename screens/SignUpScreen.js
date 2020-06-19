@@ -1,58 +1,40 @@
 import React, { useState, useContext } from 'react'
-import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions } from 'react-native'
 import { AuthContext } from '../components/Context'
 
 
 export function SignUpScreen({ navigation }) {
 
-    const [username, setUsername] = useState(null)
-    const [password, setPassword] = useState(null)
-    const [isValid, setIsValid] = useState({
-        isValidUsername: false,
-        isValidPassword: false,
-    })
+    const screenWidth = Math.round(Dimensions.get('window').width)
+    const screenHeight = Math.round(Dimensions.get('window').height)
+
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [isCorrectUsername, setIsCorrectUsername] = useState(true)
+    const [isCorrectPassword, setIsCorrectPassword] = useState(true)
 
     const { signUp } = useContext(AuthContext)
 
     const usernameInputHandler = value => {
         setUsername(value)
-        if (value.trim().length >= 4) {
-            setUsername(value)
-
-            setIsValid({
-                ...isValid,
-                isValidUsername: true
-            })
+        if (username.trim().length >= 4) {
+            setIsCorrectUsername(true)
         } else {
-            setUsername(value)
-
-            setIsValid({
-                ...isValid,
-                isValidUsername: false
-            })
+            setIsCorrectUsername(false)
         }
     }
 
     const passwordInputHandler = value => {
-        if (value.trim().length >= 4) {
-            setPassword(value)
-
-            setIsValid({
-                ...isValid,
-                isValidPassword: true
-            })
+        setPassword(value)
+        if (password.trim().length >= 4) {
+            setIsCorrectPassword(true)
         } else {
-            setPassword(value)
-
-            setIsValid({
-                ...isValid,
-                isValidPassword: false
-            })
+            setIsCorrectPassword(false)
         }
     }
 
     const signUpHandler = () => {
-        if (isValid.isValidUsername && isValid.isValidPassword) {
+        if (isCorrectUsername && isCorrectPassword && username.length > 0 && password.length > 0) {
             signUp(username, password)
 
             navigation.navigate('SignInScreen')
@@ -63,33 +45,33 @@ export function SignUpScreen({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>App! SignUp!</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder='username'
-                onChangeText={usernameInputHandler}
-                value={username}
-            />
-            {isValid.isValidUsername ? null : (
-                <Text style={styles.errorText}>Is not valid</Text>
-            )}
+            <View style={{ ...styles.topBlock, width: screenWidth, height: screenHeight / 2 }}>
+                <TextInput
+                    style={styles.input}
+                    placeholder='username'
+                    onChangeText={usernameInputHandler}
+                    value={username}
+                />
+                <Text style={isCorrectUsername ? styles.notErrorText : styles.errorText}>At least 4 characters</Text>
 
-            <TextInput
-                style={styles.input}
-                placeholder='password'
-                onChangeText={passwordInputHandler}
-                value={password}
-            />
-            {isValid.isValidPassword ? null : (
-                <Text style={styles.errorText}>Is not valid</Text>
-            )}
+                <TextInput
+                    style={styles.input}
+                    placeholder='password'
+                    onChangeText={passwordInputHandler}
+                    value={password}
+                />
+                <Text style={isCorrectPassword ? styles.notErrorText : styles.errorText}>At least 4 characters</Text>
+            </View>
 
-            <Button
-                title='SignUp'
-                color='blue'
-                onPress={signUpHandler}
-            />
+            <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
+                <Button
+                    title='SignUp'
+                    color='blue'
+                    onPress={signUpHandler}
+                />
+            </View>
+
         </View>
     )
 }
@@ -97,20 +79,47 @@ export function SignUpScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: '#ccc',
     },
     text: {
         color: '#fff'
     },
-    errorText: {
-        color: 'red',
+    topBlock: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        backgroundColor: '#ccc'
     },
+    bottomBlock: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        justifyContent: 'center',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        backgroundColor: '#eee'
+    },
+
     input: {
-        width: 100,
-        marginVertical: 15,
+        width: '100%',
+        marginVertical: 10,
+        padding: 5,
+        borderRadius: 10,
         color: '#000',
-        backgroundColor: '#fff'
-    }
+        backgroundColor: '#eee'
+    },
+
+    errorText: {
+        marginVertical: 5,
+        marginLeft: 5,
+        color: 'red'
+    },
+
+    notErrorText: {
+        marginVertical: 5,
+        marginLeft: 5,
+        color: '#000'
+    },
 })

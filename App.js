@@ -91,29 +91,36 @@ export default function App() {
         try {
           keys = await AsyncStorage.getAllKeys()
 
-          for (let i = 1; i <= keys.length; i++) {
-            item = await AsyncStorage.getItem(`user${i}`)
+          console.log(keys)
+          if (keys.length > 0) {
+            for (let i = 1; i <= keys.length; i++) {
+              item = await AsyncStorage.getItem(`user${i}`)
+              if (item) {
+                item = JSON.parse(item)
 
-            if (item) {
-              item = JSON.parse(item)
+                console.log(item)
 
-              console.log(item)
+                if (item['username'] == username && item['password'] == password) {
+                  i = keys.length + 1
 
-              if (item['username'] == username && item['password'] == password) {
-                i = keys.length + 1
+                  dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['count'] })
+                  console.log(loginState)
 
-                dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['count'] })
-                console.log(loginState)
+                  let userData = { username, activeUserToken: item['token'], activeUserBalance: item['count'] }
+                  userData = JSON.stringify(userData)
 
-                let userData = { username, activeUserToken: item['token'], activeUserBalance: item['count'] }
-                userData = JSON.stringify(userData)
+                  console.log(userData)
 
-                console.log(userData)
-
-                AsyncStorage.setItem('activeUser', userData)
+                  AsyncStorage.setItem('activeUser', userData)
+                }
               }
             }
+          } else {
+            console.log('There is not any user!')
+            alert('There is not any user!')
           }
+
+
         } catch (e) {
           console.log(e)
         }
