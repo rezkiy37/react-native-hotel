@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 
 export function HomeScreen({ navigation }) {
@@ -53,3 +53,5 @@ const styles = StyleSheet.create({
         color: '#fff'
     }
 })
+
+

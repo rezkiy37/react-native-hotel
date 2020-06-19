@@ -1,21 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native'
+import { StyleSheet, Text, View, Button, TextInput, Image, Dimensions } from 'react-native'
 import { AuthContext } from '../components/Context'
+
 
 
 export function ProfileScreen() {
 
+    const screenWidth = Math.round(Dimensions.get('window').width)
+    const screenHeight = Math.round(Dimensions.get('window').height)
+
     const [isBalance, setIsBalance] = useState(null)
     const [isUser, setIsUser] = useState(null)
     const [inputValue, setInputValue] = useState('')
-    const [isCorrectValue, setIsCorrectValue] = useState(false)
+    const [isCorrectValue, setIsCorrectValue] = useState(true)
 
-    const { signOut, getActiveUser, getBalance, getToken, createBalance, addFunds, checkState } = useContext(AuthContext)
-
-    const signOutHandler = () => {
-        signOut()
-        setIsUser(null)
-    }
+    const { getActiveUser, getBalance, getToken, createBalance, addFunds } = useContext(AuthContext)
 
     const setUser = () => {
         let user = getActiveUser()
@@ -47,7 +46,6 @@ export function ProfileScreen() {
         }
     }
 
-
     const inputHandler = value => {
         let certainValue = +value
         setInputValue(value)
@@ -59,69 +57,69 @@ export function ProfileScreen() {
         }
     }
 
-    const checkHandler = () => {
-        checkState()
-        //console.log(inputValue)
-    }
 
     useEffect(() => {
         setUser()
         setBalance()
-        console.log(inputValue)
     }, [])
 
     return (
         <View style={styles.container}>
-            <Button
-                title='Check'
-                onPress={checkHandler}
-            />
-            <Text style={styles.text}>App! Profile!</Text>
 
-            {isUser ? (
-                <Text style={styles.text}>{isUser}</Text>
-            ) : (
-                    <Text style={styles.text}>Is not user</Text>
-                )}
+            <View style={{ ...styles.topBlock, width: screenWidth, height: screenHeight / 5 }} >
+                {isUser ? (
+                    <View style={styles.userBlock}>
+                        <Image
+                            style={styles.userImg}
+                            source={require('../assets/user.png')}
+                        />
+                        <Text style={styles.userText}>{isUser}</Text>
+                    </View>
+                ) : (
+                        <Text style={styles.userText}>Is not user</Text>
+                    )}
+
+                {isBalance ? (
+                    <View style={styles.balanceBlock}>
+                        <Text style={{ ...styles.balanceText, marginRight: 15 }}>Balance:</Text>
+                        <Text style={styles.balanceText}>{isBalance}</Text>
+                    </View>
+                ) : (
+                        <View style={styles.balanceBlock}>
+                            <Text style={styles.balanceText}>Create balance</Text>
+                        </View>
+                    )}
+            </View>
+
 
             {isBalance ? (
-                <Text style={styles.text}>{isBalance}</Text>
-            ) : (
-                    <Text style={styles.text}>Create balance</Text>
-                )}
-
-            <Button
-                title='SignOut'
-                onPress={signOutHandler}
-            />
-
-            {isBalance ? (
-                <View>
+                <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
                     <TextInput
-                        style={styles.input}
+                        style={{ ...styles.input }}
                         value={inputValue}
                         onChangeText={value => inputHandler(value)}
                         keyboardType='numeric'
+                        placeholder='Enter amount'
+                        placeholderTextColor='gray'
                     />
-                    {isCorrectValue ? null : (
-                        <Text style={styles.errorText}>The value must be integer</Text>
-                    )}
+                    <Text style={isCorrectValue ? styles.notErrorText : styles.errorText}>The value must be integer</Text>
                     <Button
                         title='Add funds'
+                        color='green'
                         onPress={addFundsHandler}
                     />
                 </View>
             ) : (
                     <View>
                         <TextInput
-                            style={styles.input}
+                            style={{ ...styles.input }}
                             value={inputValue}
                             onChangeText={value => inputHandler(value)}
                             keyboardType='numeric'
+                            placeholder='Enter amount'
+                            placeholderTextColor='gray'
                         />
-                        {isCorrectValue ? null : (
-                            <Text style={styles.errorText}>The value must be integer</Text>
-                        )}
+                        <Text style={isCorrectValue ? { color: '#000' } : styles.errorText}>The value must be integer</Text>
                         <Button
                             title='Create balans'
                             onPress={createBalanceHandler}
@@ -135,19 +133,74 @@ export function ProfileScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        justifyContent: 'center',
+        backgroundColor: '#ccc',
     },
     text: {
         color: '#fff'
     },
+    topBlock: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#ccc'
+    },
+
+    bottomBlock: {
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        justifyContent: 'center',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        backgroundColor: '#eee'
+    },
+
+    userBlock: {
+        flexDirection: 'row',
+        alignItems: 'center',
+
+    },
+
+    userImg: {
+        width: 40,
+        height: 40,
+        marginRight: 15,
+        borderRadius: 15
+    },
+
+    userText: {
+        color: '#eee',
+        fontSize: 22,
+        fontWeight: 'bold'
+    },
+
+    balanceBlock: {
+        flexDirection: 'row'
+    },
+
+    balanceText: {
+        color: '#eee',
+        fontSize: 22,
+        fontWeight: 'bold'
+    },
+
     input: {
-        width: 100,
+        padding: 5,
+        borderRadius: 10,
         color: '#000',
         backgroundColor: '#ccc'
     },
+
     errorText: {
+        marginVertical: 15,
         color: 'red'
-    }
+    },
+
+    notErrorText: {
+        marginVertical: 15,
+        color: '#ccc'
+    },
 })

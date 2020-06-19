@@ -12,10 +12,11 @@ export function AuthoStackScreen() {
             headerStyle: {
                 backgroundColor: '#ccc'
             },
-            headerTintColor: '#eee',
+            headerTintColor: '#000',
             headerTitleStyle: {
                 fontWeight: 'bold'
-            }
+            },
+            headerTitleAlign: "center"
         }}>
             <AuthoStack.Screen name="SignInScreen" component={SignInScreen} options={{
                 title: 'SignIn'

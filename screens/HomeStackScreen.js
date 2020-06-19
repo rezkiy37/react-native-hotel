@@ -13,10 +13,11 @@ export function HomeStackScreen() {
             headerStyle: {
                 backgroundColor: '#ccc'
             },
-            headerTintColor: '#eee',
+            headerTintColor: '#000',
             headerTitleStyle: {
                 fontWeight: 'bold'
-            }
+            },
+            headerTitleAlign: "center"
         }}>
             <HomeStack.Screen name="HomeScreen" component={HomeScreen} options={{
                 title: 'Home'

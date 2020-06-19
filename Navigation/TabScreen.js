@@ -9,19 +9,30 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
     return (
         <Tab.Navigator
             initialRouteName="Home"
+            activeColor="#000"
+            inactiveColor="#eee"
+
+            barStyle={{
+                backgroundColor: '#ccc',
+            }}
+
         // tabBarOptions={{
         //     activeTintColor: 'tomato',
         //     inactiveTintColor: 'gray',
-        //     activeBackgroundColor: 'red'
+        //     : 'red'
         // }}
         >
             <Tab.Screen
                 name="Home"
                 component={HomeStackScreen}
                 options={{
+                    //tabBarBadge: 15,
                     tabBarLabel: 'Home',
-                    tabBarIcon: () => (
-                        <Ionicons name="ios-home" color='white' size={22} />
+                    tabBarIcon: ({ focused, color, fontSize }) => (
+                        <Ionicons
+                            name="ios-home"
+                            style={{ color, fontSize: 20 }}
+                        />
                     ),
                 }}
             />
@@ -31,8 +42,10 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 component={ProfileStackScreen}
                 options={{
                     tabBarLabel: 'Profile',
-                    tabBarIcon: () => (
-                        <Ionicons name="md-person" color='white' size={22} />
+                    tabBarIcon: ({ focused, color, fontSize }) => (
+                        <Ionicons name="md-person"
+                            style={{ color, fontSize: 20 }}
+                        />
                     ),
                 }}
             />
@@ -42,8 +55,11 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 component={SettingsStackScreen}
                 options={{
                     tabBarLabel: 'Settings',
-                    tabBarIcon: () => (
-                        <Ionicons name="md-settings" color='white' size={22} />
+                    tabBarIcon: ({ focused, color, fontSize }) => (
+                        <Ionicons
+                            name="md-settings"
+                            style={{ color, fontSize: 20 }}
+                        />
                     ),
                 }}
             />

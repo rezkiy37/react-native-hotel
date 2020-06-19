@@ -11,10 +11,11 @@ export function ProfileStackScreen() {
             headerStyle: {
                 backgroundColor: '#ccc'
             },
-            headerTintColor: '#eee',
+            headerTintColor: '#000',
             headerTitleStyle: {
                 fontWeight: 'bold'
-            }
+            },
+            headerTitleAlign: "center"
         }}>
             <ProfileStack.Screen
                 name="ProfileScreen"

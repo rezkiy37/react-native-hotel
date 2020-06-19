@@ -11,10 +11,11 @@ export function SettingsStackScreen() {
             headerStyle: {
                 backgroundColor: '#ccc'
             },
-            headerTintColor: '#eee',
+            headerTintColor: '#000',
             headerTitleStyle: {
                 fontWeight: 'bold'
-            }
+            },
+            headerTitleAlign: "center"
         }}>
             <SettingsStack.Screen name="SettingsScreen" component={SettingsScreen} options={{
                 title: 'Settings'
