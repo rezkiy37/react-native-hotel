@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { HomeScreen } from './HomeScreen'
 
 import { createStackNavigator } from '@react-navigation/stack'
-import { HotelScreen } from './HotelScreen'
-import { RoomScreen } from './RoomScreen'
+import { HotelScreen } from './HotelsScreen'
+import { RoomScreen } from './RoomsScreen'
 
 const HomeStack = createStackNavigator()
 
@@ -23,10 +23,10 @@ export function HomeStackScreen() {
                 title: 'Home'
             }} />
             <HomeStack.Screen name="HotelScreen" component={HotelScreen} options={{
-                title: 'Hotel'
+                title: 'Hotels'
             }} />
             <HomeStack.Screen name="RoomScreen" component={RoomScreen} options={{
-                title: 'Room'
+                title: 'Rooms'
             }} />
         </HomeStack.Navigator>
     )

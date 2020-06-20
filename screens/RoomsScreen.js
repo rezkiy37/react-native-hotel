@@ -19,7 +19,7 @@ export function RoomScreen({ navigation, route }) {
 
         if (userBalance == undefined) {
             alert('Create balance!')
-        } else if (newBalance > 0) {
+        } else if (newBalance >= 0) {
             let roomsToMerge = [...rooms]
             roomsToMerge[roomID].available = false
 
