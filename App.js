@@ -181,6 +181,20 @@ export default function App() {
       }
     },
 
+    rentRoom: async (token, balance) => {
+      let balanceObj = { balance }
+      let balanceObjActiveUser = { activeUserBalance: balance }
+      let balanceToMerge = JSON.stringify(balanceObj)
+      let balanceToMergeACtiveUser = JSON.stringify(balanceObjActiveUser)
+      try {
+        await AsyncStorage.mergeItem(token, balanceToMerge)
+        await AsyncStorage.mergeItem('activeUser', balanceToMergeACtiveUser)
+        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceObj.balance })
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
     getActiveUser: () => {
       return loginState.activeUser
     },

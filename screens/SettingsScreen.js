@@ -30,19 +30,31 @@ export function SettingsScreen() {
                 { order: 1, price: 45, available: false },
                 { order: 2, price: 50, available: true },
                 { order: 3, price: 55, available: false },
-                { order: 4, price: 60, available: false },
-                { order: 5, price: 75, available: false },
+                { order: 4, price: 60, available: true },
+                { order: 5, price: 75, available: true },
             ]
         }
 
         let src = { src: '../assets/hotels/president.png' }
 
+        let rooms = {
+            rooms: [
+                { order: 1, price: 45, available: true },
+                // { order: 2, price: 50, available: true },
+                // { order: 3, price: 55, available: false },
+                // { order: 4, price: 60, available: true },
+                // { order: 5, price: 75, available: true },
+            ]
+        }
+
         let hotelToSet = JSON.stringify(hotel)
         let srcToSet = JSON.stringify(src)
+        let roomsToSet = JSON.stringify(rooms)
+
         try {
             //await AsyncStorage.setItem('hotel5', hotelToSet)
 
-            await AsyncStorage.mergeItem('hotel5', srcToSet)
+            await AsyncStorage.mergeItem('hotel5', roomsToSet)
         } catch (e) {
             console.log(e)
         }

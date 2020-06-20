@@ -1,36 +1,80 @@
-import React, { useState, useContext } from 'react'
-import { StyleSheet, Text, View, Button, ScrollView } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native'
 import { AuthContext } from '../components/Context'
+import { Room } from '../components/Room'
 
-
-const Room = ({ order, price, available }) => {
-    return (
-        <View style={styles.roomContainer}>
-            <Text style={styles.text}>{order}</Text>
-            <Text style={styles.text}>{price}</Text>
-            <Text style={styles.text}>{available ? 'true' : 'false'}</Text>
-        </View>
-    )
-}
 
 
 export function RoomScreen({ navigation, route }) {
 
-    const supportHandler = () => {
-        console.log('support')
+    const { getToken, getBalance, rentRoom } = useContext(AuthContext)
+
+    const [rooms, setRooms] = useState([])
+
+    const rentHandler = async (hotelToken, roomID, price) => {
+
+        let userToken = getToken()
+        let userBalance = getBalance()
+        let newBalance = userBalance - price
+
+        if (userBalance == undefined) {
+            alert('Create balance!')
+        } else if (newBalance > 0) {
+            let roomsToMerge = [...rooms]
+            roomsToMerge[roomID].available = false
+
+            roomsToMerge = { rooms: roomsToMerge }
+
+            setRooms(roomsToMerge)
+
+            roomsToMerge = JSON.stringify(roomsToMerge)
+
+            rentRoom(userToken, newBalance)
+            try {
+                await AsyncStorage.mergeItem(hotelToken, roomsToMerge)
+            } catch (e) {
+                console.log(e)
+            }
+        } else {
+            alert('Less balance!')
+        }
     }
+
+    const freeHandler = async (token, roomID) => {
+        let roomsToMerge = [...rooms]
+        roomsToMerge[roomID].available = true
+
+        setRooms(roomsToMerge)
+
+        roomsToMerge = { rooms: roomsToMerge }
+        roomsToMerge = JSON.stringify(roomsToMerge)
+        try {
+            await AsyncStorage.mergeItem(token, roomsToMerge)
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+
+    useEffect(() => {
+        setTimeout(() => {
+            setRooms(route.params.rooms)
+        }, 100)
+    }, [rooms])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>App! Room!</Text>
-
-            <Button
-                title='Support'
-                onPress={supportHandler}
-            />
-
-            <ScrollView>
-                {route.params.rooms.map(room => <Room key={room.order} order={room.order} price={room.price} available={room.available} />)}
+            <ScrollView style={styles.roomsContainer} >
+                {route.params.rooms.map(room => (
+                    <Room
+                        key={room.order}
+                        order={room.order}
+                        price={room.price}
+                        available={room.available}
+                        token={route.params.token}
+                        rentHandler={rentHandler}
+                        freeHandler={freeHandler}
+                    />))}
             </ScrollView>
         </View>
     )
@@ -38,17 +82,15 @@ export function RoomScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 15,
         flex: 1,
-        backgroundColor: '#000',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#ccc',
     },
-    text: {
-        color: '#fff'
+
+    roomsContainer: {
+        width: '100%',
+        paddingHorizontal: 15,
     },
-    roomContainer: {
-        marginVertical: 10,
-        padding: 10,
-        backgroundColor: '#eee'
-    }
 })

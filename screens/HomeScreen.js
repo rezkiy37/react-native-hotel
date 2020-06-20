@@ -17,8 +17,6 @@ export function HomeScreen({ navigation }) {
         roomsCount += hotels[i].rooms.length
     }
 
-    console.log(hotelsCount, roomsCount)
-
     const hotelHandler = () => {
         navigation.push('HotelScreen', { hotels })
     }
@@ -32,15 +30,9 @@ export function HomeScreen({ navigation }) {
             try {
                 keys = await AsyncStorage.getAllKeys()
 
-                console.log(keys.length)
-
                 for (let i = 1; i <= 5; i++) {
                     hotel = await AsyncStorage.getItem(`hotel${i}`)
                     hotel = await JSON.parse(hotel)
-
-                    if (i == 5) {
-                        console.log(hotel)
-                    }
 
                     hotelsArray.push(hotel)
                 }
