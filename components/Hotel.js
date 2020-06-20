@@ -17,7 +17,6 @@ export function Hotel({ navigation, title, desc, src, count, rooms, token }) {
                 </View>
                 <View style={styles.hotelContent}>
                     <Image
-                        style={styles.hotelImg}
                         source={require('../assets/hotels/lux.png')}
                     />
                     <Text style={styles.hotelText}>Rooms: {count}</Text>
@@ -62,10 +61,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center'
-    },
-
-    hotelImg: {
-
     },
 
     hotelText: {

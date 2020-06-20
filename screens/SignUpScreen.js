@@ -11,23 +11,38 @@ export function SignUpScreen({ navigation }) {
     const height = screenHeight()
 
     const [username, setUsername] = useState('')
+    const [userName, setUserName] = useState('')
     const [password, setPassword] = useState('')
+    const [secondPassword, setSecondPassword] = useState('')
     const [isCorrectUsername, setIsCorrectUsername] = useState(true)
+    const [isCorrectUserName, setIsCorrectUserName] = useState(true)
     const [isCorrectPassword, setIsCorrectPassword] = useState(true)
+    const [isCorrectBothPasswords, setIsCorrectBothPasswords] = useState(true)
 
     const { signUp } = useContext(AuthContext)
 
     const usernameInputHandler = value => {
+        value = value.trim().toLowerCase()
         setUsername(value)
     }
 
+    const userNameInputHandler = value => {
+        setUserName(value)
+    }
+
     const passwordInputHandler = value => {
+        value = value.trim()
         setPassword(value)
     }
 
+    const secondPasswordInputHandler = value => {
+        value = value.trim()
+        setSecondPassword(value)
+    }
+
     const signUpHandler = () => {
-        if (isCorrectUsername && isCorrectPassword && username.length > 0 && password.length > 0) {
-            signUp(username, password)
+        if (isCorrectUsername && isCorrectUserName && isCorrectBothPasswords && username.length > 0 && password.length > 0) {
+            signUp(userName, username, password)
 
             navigation.navigate('SignInScreen')
         } else {
@@ -36,10 +51,17 @@ export function SignUpScreen({ navigation }) {
     }
 
     useEffect(() => {
+
         if (username.length >= 4) {
             setIsCorrectUsername(true)
         } else {
             setIsCorrectUsername(false)
+        }
+
+        if (userName.length >= 3) {
+            setIsCorrectUserName(true)
+        } else {
+            setIsCorrectUserName(false)
         }
 
         if (password.length >= 4) {
@@ -47,12 +69,28 @@ export function SignUpScreen({ navigation }) {
         } else {
             setIsCorrectPassword(false)
         }
-    }, [username, password])
+
+        if (password == secondPassword) {
+            setIsCorrectBothPasswords(true)
+        } else {
+            setIsCorrectBothPasswords(false)
+        }
+
+    }, [username, userName, password, secondPassword])
 
     return (
         <View style={styles.container}>
 
-            <View style={{ ...styles.topBlock, width, height: height / 2 }}>
+            <View style={{ ...styles.topBlock, width, height: height / 1.9 }}>
+
+                <TextInput
+                    style={styles.input}
+                    placeholder='real name'
+                    onChangeText={userNameInputHandler}
+                    value={userName}
+                />
+                <Text style={isCorrectUserName ? styles.notErrorText : styles.errorText}>At least 3 characters</Text>
+
                 <TextInput
                     style={styles.input}
                     placeholder='username'
@@ -64,13 +102,29 @@ export function SignUpScreen({ navigation }) {
                 <TextInput
                     style={styles.input}
                     placeholder='password'
+                    secureTextEntry={true}
                     onChangeText={passwordInputHandler}
                     value={password}
                 />
                 <Text style={isCorrectPassword ? styles.notErrorText : styles.errorText}>At least 4 characters</Text>
+
+                <TextInput
+                    style={styles.input}
+                    placeholder='second password'
+                    secureTextEntry={true}
+                    onChangeText={secondPasswordInputHandler}
+                    value={secondPassword}
+                />
+
+                {isCorrectBothPasswords ? (
+                    <Text style={styles.notErrorText}>Passwords are confirmed</Text>
+                ) : (
+                        <Text style={styles.errorText}>Passwords are different</Text>
+                    )}
+
             </View>
 
-            <View style={{ ...styles.bottomBlock, width, height: height / 3 }}>
+            <View style={{ ...styles.bottomBlock, width, height: height / 4 }}>
                 <Button
                     title='SignUp'
                     color='blue'
@@ -89,9 +143,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ccc',
     },
-    text: {
-        color: '#fff'
-    },
+
     topBlock: {
         paddingVertical: 10,
         paddingHorizontal: 15,
@@ -99,6 +151,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         backgroundColor: '#ccc'
     },
+
     bottomBlock: {
         paddingVertical: 10,
         paddingHorizontal: 15,

@@ -22,6 +22,7 @@ export default function App() {
     isLoading: true,
     isCorrectUser: false,
     activeUser: null,
+    activeUserName: null,
     activeUserToken: null,
     activeUserBalance: null
   }
@@ -39,6 +40,7 @@ export default function App() {
           ...prevState,
           isLoading: false,
           activeUser: action.activeUser,
+          activeUserName: action.activeUserName,
           activeUserToken: action.activeUserToken,
           activeUserBalance: action.activeUserBalance
         }
@@ -49,6 +51,7 @@ export default function App() {
           isLoading: false,
           isCorrectUser: true,
           activeUser: action.activeUser,
+          activeUserName: action.activeUserName,
           activeUserToken: action.activeUserToken,
           activeUserBalance: action.activeUserBalance
         }
@@ -59,6 +62,7 @@ export default function App() {
           isLoading: false,
           isCorrectUser: false,
           activeUser: null,
+          activeUserName: null,
           activeUserToken: null,
           activeUserBalance: null
         }
@@ -69,6 +73,7 @@ export default function App() {
           isLoading: false,
           isCorrectUser: false,
           activeUser: null,
+          activeUserName: null,
           activeUserToken: null
         }
 
@@ -103,10 +108,22 @@ export default function App() {
                 if (item['username'] == username && item['password'] == password) {
                   i = keys.length + 1
 
-                  dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['balance'] })
+                  dispatch({
+                    type: LOGIN,
+                    activeUser: item['username'],
+                    activeUserName: item['userName'],
+                    activeUserToken: item['token'],
+                    activeUserBalance: item['balance']
+                  })
+
                   console.log(loginState)
 
-                  let userData = { username, activeUserToken: item['token'], activeUserBalance: item['balance'] }
+                  let userData = {
+                    username,
+                    activeUserName: item['userName'],
+                    activeUserToken: item['token'],
+                    activeUserBalance: item['balance']
+                  }
                   userData = JSON.stringify(userData)
 
                   console.log(userData)
@@ -138,21 +155,30 @@ export default function App() {
       }
     },
 
-    signUp: async (username, password) => {
+    signUp: async (userName, username, password) => {
 
       let keys = []
       let newUser
 
-      try {
-        keys = await AsyncStorage.getAllKeys()
-        newUser = { username, password, token: `user${keys.length + 1}` }
+      if (userName && username && password) {
+        try {
+          keys = await AsyncStorage.getAllKeys()
+          newUser = {
+            userName,
+            username,
+            password,
+            token: `user${keys.length + 1}`
+          }
 
-        await console.log(newUser)
+          await console.log(newUser)
 
-        await AsyncStorage.setItem(`user${keys.length + 1}`, JSON.stringify(newUser))
-        await console.log('User Pair Data was saved!')
-      } catch (e) {
-        console.log(e)
+          await AsyncStorage.setItem(`user${keys.length + 1}`, JSON.stringify(newUser))
+          await console.log('User Pair Data was saved!')
+        } catch (e) {
+          console.log(e)
+        }
+      } else {
+        alert('Enter all fields!')
       }
     },
 
@@ -197,6 +223,10 @@ export default function App() {
 
     getActiveUser: () => {
       return loginState.activeUser
+    },
+
+    getActiveUserName: () => {
+      return loginState.activeUserName
     },
 
     getToken: () => {
@@ -249,6 +279,7 @@ export default function App() {
           dispatch({
             type: RETRIEVE_TOKEN,
             activeUser: activeUser['username'],
+            activeUserName: activeUser['activeUserName'],
             activeUserToken: activeUser['activeUserToken'],
             activeUserBalance: activeUser['activeUserBalance']
           })

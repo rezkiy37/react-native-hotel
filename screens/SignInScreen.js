@@ -14,7 +14,7 @@ export function SignInScreen({ navigation }) {
     const [isCorrectUsername, setIsCorrectUsername] = useState(true)
     const [isCorrectPassword, setIsCorrectPassword] = useState(true)
 
-    const { signIn, checkState } = useContext(AuthContext)
+    const { signIn } = useContext(AuthContext)
 
     const signInHandler = () => {
         if (isCorrectUsername && isCorrectPassword && username.length > 0 && password.length > 0) {
@@ -29,28 +29,17 @@ export function SignInScreen({ navigation }) {
     }
 
     const usernameInputHandler = value => {
+        value = value.trim().toLowerCase()
         setUsername(value)
     }
 
     const passwordInputHandler = value => {
+        value = value.trim()
         setPassword(value)
     }
 
-    const checkHandler = () => {
-        //checkState()
-
-        if (isCorrectUsername && isCorrectPassword && username.length > 0 && password.length > 0) {
-            console.log(username)
-            console.log(password)
-            console.log(true)
-        } else {
-            console.log(username)
-            console.log(password)
-            console.log(false)
-        }
-    }
-
     useEffect(() => {
+
         if (username.length >= 4) {
             setIsCorrectUsername(true)
         } else {
@@ -62,15 +51,12 @@ export function SignInScreen({ navigation }) {
         } else {
             setIsCorrectPassword(false)
         }
+
     }, [username, password])
 
 
     return (
         <View style={styles.container}>
-            <Button
-                title='Check'
-                onPress={checkHandler}
-            />
 
             <View style={{ ...styles.topBlock, width, height: height / 2 }}>
                 <TextInput
@@ -84,12 +70,11 @@ export function SignInScreen({ navigation }) {
                 <TextInput
                     style={{ ...styles.input }}
                     placeholder='password'
-                    secureTextEntry={false}
+                    secureTextEntry={true}
                     onChangeText={value => passwordInputHandler(value)}
                     value={password}
                 />
                 <Text style={isCorrectPassword ? styles.notErrorText : styles.errorText}>At least 4 characters</Text>
-
             </View>
 
 
@@ -109,7 +94,6 @@ export function SignInScreen({ navigation }) {
                 />
             </View>
 
-
         </View>
     )
 }
@@ -121,9 +105,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ccc',
     },
-    text: {
-        color: '#fff'
-    },
+
     topBlock: {
         paddingVertical: 10,
         paddingHorizontal: 15,
@@ -131,6 +113,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         backgroundColor: '#ccc'
     },
+
     bottomBlock: {
         paddingVertical: 10,
         paddingHorizontal: 15,

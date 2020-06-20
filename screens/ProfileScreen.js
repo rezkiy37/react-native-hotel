@@ -15,10 +15,10 @@ export function ProfileScreen() {
     const [inputValue, setInputValue] = useState('')
     const [isCorrectValue, setIsCorrectValue] = useState(true)
 
-    const { getActiveUser, getBalance, getToken, createBalance, addFunds } = useContext(AuthContext)
+    const { getActiveUserName, getBalance, getToken, createBalance, addFunds } = useContext(AuthContext)
 
     const setUser = () => {
-        let user = getActiveUser()
+        let user = getActiveUserName()
         setIsUser(user)
     }
 
@@ -57,7 +57,6 @@ export function ProfileScreen() {
             setIsCorrectValue(false)
         }
     }
-
 
     useEffect(() => {
         setUser()
@@ -139,9 +138,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#ccc',
     },
-    text: {
-        color: '#fff'
-    },
+
     topBlock: {
         paddingVertical: 10,
         paddingHorizontal: 15,
@@ -162,8 +159,8 @@ const styles = StyleSheet.create({
 
     userBlock: {
         flexDirection: 'row',
+        justifyContent: 'space-between',
         alignItems: 'center',
-
     },
 
     userImg: {

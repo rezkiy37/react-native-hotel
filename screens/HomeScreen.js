@@ -40,7 +40,7 @@ export function HomeScreen({ navigation }) {
             } catch (e) {
                 console.log(e)
             }
-        }, 10)
+        }, 1000)
     }, [])
 
     return (
@@ -48,15 +48,17 @@ export function HomeScreen({ navigation }) {
 
             <View style={{ ...styles.topBlock, width, height: height / 2 }}>
                 <Image
-                    style={{ ...styles.hotelImg }}
+                    style={styles.hotelImg}
                     source={require('../assets/hotel-intro.jpg')}
                 />
+
                 <View style={styles.topBlockContent}>
-                    <View style={{ ...styles.contentRow }}>
+                    <View style={styles.contentRow} >
                         <Text style={styles.contentText}>Hotels:</Text>
                         <Text style={styles.contentText}>{hotelsCount}</Text>
                     </View>
-                    <View style={{ ...styles.contentRow }}>
+
+                    <View style={styles.contentRow}>
                         <Text style={styles.contentText}>Rooms:</Text>
                         <Text style={styles.contentText}>{roomsCount}</Text>
                     </View>
