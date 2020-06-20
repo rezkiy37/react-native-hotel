@@ -2,12 +2,13 @@ import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, Button, TextInput, Image, Dimensions } from 'react-native'
 import { AuthContext } from '../components/Context'
 
+import { screenWidth, screenHeight } from '../components/ScreenSize'
 
 
 export function ProfileScreen() {
 
-    const screenWidth = Math.round(Dimensions.get('window').width)
-    const screenHeight = Math.round(Dimensions.get('window').height)
+    const width = screenWidth()
+    const height = screenHeight()
 
     const [isBalance, setIsBalance] = useState(null)
     const [isUser, setIsUser] = useState(null)
@@ -66,7 +67,7 @@ export function ProfileScreen() {
     return (
         <View style={styles.container}>
 
-            <View style={{ ...styles.topBlock, width: screenWidth, height: screenHeight / 5 }} >
+            <View style={{ ...styles.topBlock, width, height: height / 5 }} >
                 {isUser ? (
                     <View style={styles.userBlock}>
                         <Image
@@ -93,7 +94,7 @@ export function ProfileScreen() {
 
 
             {isBalance ? (
-                <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
+                <View style={{ ...styles.bottomBlock, width, height: height / 3 }}>
                     <TextInput
                         style={{ ...styles.input }}
                         value={inputValue}
@@ -110,7 +111,7 @@ export function ProfileScreen() {
                     />
                 </View>
             ) : (
-                    <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
+                    <View style={{ ...styles.bottomBlock, width, height: height / 3 }}>
                         <TextInput
                             style={{ ...styles.input }}
                             value={inputValue}

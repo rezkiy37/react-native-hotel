@@ -1,8 +1,8 @@
 import 'react-native-gesture-handler'
-import React, { useEffect, useMemo, useReducer, useState, useContext } from 'react'
+import React, { useEffect, useMemo, useReducer, } from 'react'
 
 import { AuthContext } from './components/Context'
-import { StyleSheet, AsyncStorage, Alert } from 'react-native'
+import { AsyncStorage, Alert } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 
 import { TabScreen } from './Navigation/TabScreen'
@@ -103,10 +103,10 @@ export default function App() {
                 if (item['username'] == username && item['password'] == password) {
                   i = keys.length + 1
 
-                  dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['count'] })
+                  dispatch({ type: LOGIN, activeUser: item['username'], activeUserToken: item['token'], activeUserBalance: item['balance'] })
                   console.log(loginState)
 
-                  let userData = { username, activeUserToken: item['token'], activeUserBalance: item['count'] }
+                  let userData = { username, activeUserToken: item['token'], activeUserBalance: item['balance'] }
                   userData = JSON.stringify(userData)
 
                   console.log(userData)
@@ -156,25 +156,26 @@ export default function App() {
       }
     },
 
-    createBalance: async (token, count) => {
-      let balance = { count }
-      let balanceToState = balance.count
-      balance = JSON.stringify(balance)
+    createBalance: async (token, balance) => {
+      let balanceObj = { balance }
+      let balanceToMerge = JSON.stringify(balanceObj)
       try {
-        await AsyncStorage.mergeItem(token, balance)
-        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceToState })
+        await AsyncStorage.mergeItem(token, balanceToMerge)
+        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceObj.balance })
       } catch (e) {
         console.log(e)
       }
     },
 
-    addFunds: async (token, count) => {
-      let balance = { count }
-      let balanceToState = balance.count
-      balance = JSON.stringify(balance)
+    addFunds: async (token, balance) => {
+      let balanceObj = { balance }
+      let balanceObjActiveUser = { activeUserBalance: balance }
+      let balanceToMerge = JSON.stringify(balanceObj)
+      let balanceToMergeACtiveUser = JSON.stringify(balanceObjActiveUser)
       try {
-        await AsyncStorage.mergeItem(token, balance)
-        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceToState })
+        await AsyncStorage.mergeItem(token, balanceToMerge)
+        await AsyncStorage.mergeItem('activeUser', balanceToMergeACtiveUser)
+        await dispatch({ type: SET_BALANCE, activeUserBalance: balanceObj.balance })
       } catch (e) {
         console.log(e)
       }
@@ -197,10 +198,27 @@ export default function App() {
       console.log(loginState)
     },
 
+    checkUserByToken: async token => {
+      try {
+        let user = await AsyncStorage.getItem(token)
+        console.log(user)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    checkActiveUser: async () => {
+      try {
+        let user = await AsyncStorage.getItem('activeUser')
+        console.log(user)
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
   }), [loginState])
 
   useEffect(() => {
-    console.log(loginState.activeUserBalance)
     setTimeout(async () => {
       let keys = []
       let activeUser
@@ -211,7 +229,7 @@ export default function App() {
         activeUser = await AsyncStorage.getItem('activeUser')
         activeUser = await JSON.parse(activeUser)
 
-        await console.log(activeUser)
+        console.log(activeUser)
 
         if (activeUser !== null) {
           dispatch({
@@ -226,7 +244,7 @@ export default function App() {
       } catch (e) {
         console.log(e)
       }
-    }, 1000);
+    }, 1000)
   }, [])
 
   return (
@@ -246,15 +264,3 @@ export default function App() {
     </AuthContext.Provider>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: '#fff'
-  }
-})

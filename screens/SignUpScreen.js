@@ -1,12 +1,14 @@
-import React, { useState, useContext } from 'react'
-import { StyleSheet, Text, View, Button, TextInput, Alert, Dimensions } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { StyleSheet, Text, View, Button, TextInput, Alert } from 'react-native'
 import { AuthContext } from '../components/Context'
+import { screenWidth, screenHeight } from '../components/ScreenSize'
+
 
 
 export function SignUpScreen({ navigation }) {
 
-    const screenWidth = Math.round(Dimensions.get('window').width)
-    const screenHeight = Math.round(Dimensions.get('window').height)
+    const width = screenWidth()
+    const height = screenHeight()
 
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
@@ -17,20 +19,10 @@ export function SignUpScreen({ navigation }) {
 
     const usernameInputHandler = value => {
         setUsername(value)
-        if (username.trim().length >= 4) {
-            setIsCorrectUsername(true)
-        } else {
-            setIsCorrectUsername(false)
-        }
     }
 
     const passwordInputHandler = value => {
         setPassword(value)
-        if (password.trim().length >= 4) {
-            setIsCorrectPassword(true)
-        } else {
-            setIsCorrectPassword(false)
-        }
     }
 
     const signUpHandler = () => {
@@ -43,10 +35,24 @@ export function SignUpScreen({ navigation }) {
         }
     }
 
+    useEffect(() => {
+        if (username.length >= 4) {
+            setIsCorrectUsername(true)
+        } else {
+            setIsCorrectUsername(false)
+        }
+
+        if (password.length >= 4) {
+            setIsCorrectPassword(true)
+        } else {
+            setIsCorrectPassword(false)
+        }
+    }, [username, password])
+
     return (
         <View style={styles.container}>
 
-            <View style={{ ...styles.topBlock, width: screenWidth, height: screenHeight / 2 }}>
+            <View style={{ ...styles.topBlock, width, height: height / 2 }}>
                 <TextInput
                     style={styles.input}
                     placeholder='username'
@@ -64,7 +70,7 @@ export function SignUpScreen({ navigation }) {
                 <Text style={isCorrectPassword ? styles.notErrorText : styles.errorText}>At least 4 characters</Text>
             </View>
 
-            <View style={{ ...styles.bottomBlock, width: screenWidth, height: screenHeight / 3 }}>
+            <View style={{ ...styles.bottomBlock, width, height: height / 3 }}>
                 <Button
                     title='SignUp'
                     color='blue'
