@@ -96,16 +96,16 @@ export default function App() {
         try {
           keys = await AsyncStorage.getAllKeys()
 
-          console.log(keys)
           if (keys.length > 0) {
             for (let i = 1; i <= keys.length; i++) {
               item = await AsyncStorage.getItem(`user${i}`)
               if (item) {
+                let found = false
+
                 item = JSON.parse(item)
 
-                console.log(item)
-
                 if (item['username'] == username && item['password'] == password) {
+                  found = true
                   i = keys.length + 1
 
                   dispatch({
@@ -116,19 +116,18 @@ export default function App() {
                     activeUserBalance: item['balance']
                   })
 
-                  console.log(loginState)
-
                   let userData = {
                     username,
                     activeUserName: item['userName'],
                     activeUserToken: item['token'],
                     activeUserBalance: item['balance']
                   }
+
                   userData = JSON.stringify(userData)
 
-                  console.log(userData)
-
                   AsyncStorage.setItem('activeUser', userData)
+                } else if (!found && i == keys.length) {
+                  alert('Not suitable!')
                 }
               }
             }
@@ -184,9 +183,12 @@ export default function App() {
 
     createBalance: async (token, balance) => {
       let balanceObj = { balance }
+      let balanceObjActiveUser = { activeUserBalance: balance }
       let balanceToMerge = JSON.stringify(balanceObj)
+      let balanceToMergeACtiveUser = JSON.stringify(balanceObjActiveUser)
       try {
         await AsyncStorage.mergeItem(token, balanceToMerge)
+        await AsyncStorage.mergeItem('activeUser', balanceToMergeACtiveUser)
         await dispatch({ type: SET_BALANCE, activeUserBalance: balanceObj.balance })
       } catch (e) {
         console.log(e)
@@ -238,27 +240,27 @@ export default function App() {
     },
 
 
-    checkState: () => {
-      console.log(loginState)
-    },
+    // checkState: () => {
+    //   console.log(loginState)
+    // },
 
-    checkUserByToken: async token => {
-      try {
-        let user = await AsyncStorage.getItem(token)
-        console.log(user)
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    // checkUserByToken: async token => {
+    //   try {
+    //     let user = await AsyncStorage.getItem(token)
+    //     console.log(user)
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // },
 
-    checkActiveUser: async () => {
-      try {
-        let user = await AsyncStorage.getItem('activeUser')
-        console.log(user)
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    // checkActiveUser: async () => {
+    //   try {
+    //     let user = await AsyncStorage.getItem('activeUser')
+    //     console.log(user)
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // },
 
   }), [loginState])
 

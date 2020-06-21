@@ -1,4 +1,4 @@
-export let hotels = [
+export let initialHotels = [
     {
         id: 1, token: 'hotel1', title: 'Motel', desc: 'Poor', rooms: [
             { order: 1, price: 10, available: true },

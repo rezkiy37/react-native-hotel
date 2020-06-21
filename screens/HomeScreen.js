@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Button, Image, AsyncStorage } from 'react-native'
 
 import { screenWidth, screenHeight } from '../components/ScreenSize'
+import { initialHotels } from '../model/hotel'
+
 
 export function HomeScreen({ navigation }) {
 
@@ -9,50 +11,91 @@ export function HomeScreen({ navigation }) {
     const height = screenHeight()
 
     const [hotels, setHotels] = useState([])
-
-    let hotelsCount
-    let roomsCount = 0
-    if (!hotels) {
-        hotelsCount = hotels.length
-        for (let i = 0; i < hotels.length; i++) {
-            roomsCount += hotels[i].rooms.length
-        }
-    } else {
-        hotelsCount = 0
-    }
-
+    const [hotelsCount, setHotelsCount] = useState(0)
+    const [roomsCount, setRoomsCount] = useState(0)
 
     const hotelHandler = () => {
         navigation.push('HotelScreen', { hotels })
     }
 
     useEffect(() => {
-        setTimeout(async () => {
-            let keys = []
-            let hotel
-            let hotelsArray = []
+        const fetchHotels = async () => {
+            setHotelsCount(0)
+            setRoomsCount(0)
             try {
-                keys = await AsyncStorage.getAllKeys()
+                const keys = await AsyncStorage.getAllKeys()
 
                 if (keys.length > 0) {
+                    let hotel
+                    let hotelArray = []
+                    let roomsCountEffect = 0
 
-                    for (let i = 1; i <= 5; i++) {
+                    for (let i = 1; i < keys.length; i++) {
                         hotel = await AsyncStorage.getItem(`hotel${i}`)
-                        hotel = await JSON.parse(hotel)
 
-                        hotelsArray.push(hotel)
+                        if (hotel) {
+                            hotel = JSON.parse(hotel)
+                            hotelArray.push(hotel)
+                        } else {
+                            i = keys.length
+                            console.log('Stop fetching')
+                        }
                     }
-                    setHotels(hotelsArray)
-                } else {
-                    setHotels(null)
-                }
 
-                await console.log(hotels)
+                    setHotelsCount(hotelArray.length)
+
+                    for (let i = 0; i < hotelArray.length; i++) {
+                        roomsCountEffect += hotelArray[i].rooms.length
+                    }
+
+                    setRoomsCount(roomsCountEffect)
+                    setHotels(hotelArray)
+
+                    console.log(hotelArray)
+                } else {
+                    console.error('There is not any data. Error!')
+                }
             } catch (e) {
                 console.log(e)
             }
-        }, 1000)
+        }
+
+        const defineHotels = async () => {
+            setHotelsCount(0)
+            setRoomsCount(0)
+
+            try {
+                const keys = await AsyncStorage.getAllKeys()
+
+                if (keys.length > 0) {
+                    let hotel
+
+                    for (let i = 1; i <= 1; i++) {
+                        hotel = await AsyncStorage.getItem(`hotel${i}`)
+
+                        if (hotel) {
+                            fetchHotels()
+                        } else {
+                            console.log('There is not any hotel!')
+
+                            for (let h = 1; h <= initialHotels.length; h++) {
+                                let hotel = JSON.stringify(initialHotels[h - 1])
+
+                                await AsyncStorage.setItem(`hotel${h}`, hotel)
+                            }
+                        }
+                    }
+                } else {
+                    console.error('There is not any data. Error!')
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        }
+
+        defineHotels()
     }, [])
+
 
     return (
         <View style={styles.container}>
