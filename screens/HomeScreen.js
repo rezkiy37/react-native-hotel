@@ -13,10 +13,18 @@ export function HomeScreen({ navigation }) {
     const [hotels, setHotels] = useState([])
     const [hotelsCount, setHotelsCount] = useState(0)
     const [roomsCount, setRoomsCount] = useState(0)
+    const [isDisabled, setIsDisabled] = useState(false)
 
     const hotelHandler = () => {
+        setIsDisabled(true)
         navigation.push('HotelScreen', { hotels })
     }
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsDisabled(false)
+        }, 500)
+    }, [isDisabled])
 
     useEffect(() => {
         const fetchHotels = async () => {
@@ -51,7 +59,6 @@ export function HomeScreen({ navigation }) {
                     setRoomsCount(roomsCountEffect)
                     setHotels(hotelArray)
 
-                    console.log(hotelArray)
                 } else {
                     console.error('There is not any data. Error!')
                 }
@@ -125,6 +132,7 @@ export function HomeScreen({ navigation }) {
                         title='Get hotel'
                         color='green'
                         onPress={hotelHandler}
+                        disabled={isDisabled ? true : false}
                     />
                 ) : (
                         <Button

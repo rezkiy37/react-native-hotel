@@ -4,6 +4,7 @@
     "icon": "./assets/hotel.png",
     "version": "1.0.0",
     "slug": "hotel",
+    "orientation": "portrait",
     "ios": {
       "bundleIdentifier": "com.yourcompany.yourappname",
       "buildNumber": "1.0.0"

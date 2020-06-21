@@ -1,15 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 
 export function Hotel({ navigation, title, desc, src, count, rooms, token }) {
 
+    const [isDisabled, setIsDisabled] = useState(false)
+
     const roomHandler = () => {
+        setIsDisabled(true)
         navigation.push('RoomScreen', { rooms, token })
     }
 
+    useEffect(() => {
+        setTimeout(() => {
+            setIsDisabled(false)
+        }, 500)
+    }, [isDisabled])
+
     return (
-        <TouchableOpacity onPress={roomHandler} activeOpacity={.9}>
+        <TouchableOpacity
+            onPress={roomHandler}
+            activeOpacity={.9}
+            disabled={isDisabled ? true : false}
+        >
             <View style={styles.hotelBlock} >
                 <View style={styles.hotelHeader}>
                     <Text style={styles.hotelTitle}>{title}</Text>

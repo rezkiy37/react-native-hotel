@@ -29,7 +29,7 @@ export function SignInScreen({ navigation }) {
     }
 
     const usernameInputHandler = value => {
-        value = value.trim().toLowerCase()
+        value = value.trim()
         setUsername(value)
     }
 

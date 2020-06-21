@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { StyleSheet, View, ScrollView, AsyncStorage } from 'react-native'
 import { AuthContext } from '../components/Context'
 import { Room } from '../components/Room'
+import { Loading } from './Loading'
 
 
 
@@ -10,6 +11,7 @@ export function RoomScreen({ navigation, route }) {
     const { getToken, getBalance, rentRoom } = useContext(AuthContext)
 
     const [rooms, setRooms] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     const rentHandler = async (hotelToken, roomID, price) => {
 
@@ -57,25 +59,22 @@ export function RoomScreen({ navigation, route }) {
 
 
     useEffect(() => {
-        // let mounted = true
-        // let roomsLoading
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 300)
+    }, [isLoading])
 
-        // if (mounted) {
-        //     roomsLoading = setInterval(() => {
-
-        //     }, 1000)
-        // }
-
-        // return () => {
-        //     mounted = false
-        //     clearInterval(roomsLoading)
-        // }
+    useEffect(() => {
         setRooms(route.params.rooms)
         return () => {
             setRooms(null)
         }
-
     }, [rooms])
+
+
+    if (isLoading) {
+        return <Loading />
+    }
 
     return (
         <View style={styles.container}>

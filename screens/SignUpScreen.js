@@ -22,7 +22,7 @@ export function SignUpScreen({ navigation }) {
     const { signUp } = useContext(AuthContext)
 
     const usernameInputHandler = value => {
-        value = value.trim().toLowerCase()
+        value = value.trim()
         setUsername(value)
     }
 

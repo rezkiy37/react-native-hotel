@@ -1,9 +1,23 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, ScrollView } from 'react-native'
 import { Hotel } from '../components/Hotel'
+import { Loading } from './Loading'
 
 
 export function HotelScreen({ navigation, route }) {
+
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 300)
+    }, [isLoading])
+
+    if (isLoading) {
+        return <Loading />
+    }
+
     return (
         <View style={styles.container}>
 

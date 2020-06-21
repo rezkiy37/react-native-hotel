@@ -1,15 +1,27 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Button, Image } from 'react-native'
 
 export function Room({ token, order, price, available, rentHandler, freeHandler }) {
 
+    const [isDisabled, setIsDisabled] = useState(false)
+
     const btnRentHandler = () => {
+        //setIsDisabled(true)
+
         rentHandler(token, order - 1, price)
     }
 
     const btnFreeHandler = () => {
+        //setIsDisabled(true)
+
         freeHandler(token, order - 1)
     }
+
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setIsDisabled(false)
+    //     }, 500)
+    // }, [isDisabled])
 
     return (
         <View style={styles.roomBlock}>
@@ -36,12 +48,14 @@ export function Room({ token, order, price, available, rentHandler, freeHandler 
                         onPress={btnRentHandler}
                         title='Rent'
                         color='green'
+                    //disabled={isDisabled ? true : false}
                     />
                 ) : (
                         <Button
                             onPress={btnFreeHandler}
                             title='Busy'
                             color='red'
+                        //disabled={isDisabled ? true : false}
                         />
                     )}
             </View>
