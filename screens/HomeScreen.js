@@ -10,17 +10,21 @@ export function HomeScreen({ navigation }) {
 
     const [hotels, setHotels] = useState([])
 
-    let hotelsCount = hotels.length
-
+    let hotelsCount
     let roomsCount = 0
-    for (let i = 0; i < hotels.length; i++) {
-        roomsCount += hotels[i].rooms.length
+    if (!hotels) {
+        hotelsCount = hotels.length
+        for (let i = 0; i < hotels.length; i++) {
+            roomsCount += hotels[i].rooms.length
+        }
+    } else {
+        hotelsCount = 0
     }
+
 
     const hotelHandler = () => {
         navigation.push('HotelScreen', { hotels })
     }
-
 
     useEffect(() => {
         setTimeout(async () => {
@@ -30,13 +34,20 @@ export function HomeScreen({ navigation }) {
             try {
                 keys = await AsyncStorage.getAllKeys()
 
-                for (let i = 1; i <= 5; i++) {
-                    hotel = await AsyncStorage.getItem(`hotel${i}`)
-                    hotel = await JSON.parse(hotel)
+                if (keys.length > 0) {
 
-                    hotelsArray.push(hotel)
+                    for (let i = 1; i <= 5; i++) {
+                        hotel = await AsyncStorage.getItem(`hotel${i}`)
+                        hotel = await JSON.parse(hotel)
+
+                        hotelsArray.push(hotel)
+                    }
+                    setHotels(hotelsArray)
+                } else {
+                    setHotels(null)
                 }
-                setHotels(hotelsArray)
+
+                await console.log(hotels)
             } catch (e) {
                 console.log(e)
             }
@@ -66,11 +77,20 @@ export function HomeScreen({ navigation }) {
             </View>
 
             <View style={{ ...styles.bottomBlock, width, height: height / 4 }}>
-                <Button
-                    title='Get hotel'
-                    color='green'
-                    onPress={hotelHandler}
-                />
+                {hotelsCount ? (
+                    <Button
+                        title='Get hotel'
+                        color='green'
+                        onPress={hotelHandler}
+                    />
+                ) : (
+                        <Button
+                            title='There is not any hotel'
+                            color='green'
+                            disabled
+                        />
+                    )}
+
             </View>
         </View>
     )

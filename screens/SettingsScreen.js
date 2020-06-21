@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
-import { StyleSheet, View, Button } from 'react-native'
+import { StyleSheet, View, Button, AsyncStorage } from 'react-native'
 import { AuthContext } from '../components/Context'
 
 import { screenWidth, screenHeight } from '../components/ScreenSize'
+import { hotels } from '../model/hotel'
 
 export function SettingsScreen() {
 
@@ -15,8 +16,27 @@ export function SettingsScreen() {
         signOut()
     }
 
+    const deleteHotels = async () => {
+        for (let i = 1; i <= 5; i++) {
+            AsyncStorage.removeItem(`hotel${i}`)
+        }
+    }
+
+    const createHotels = () => {
+        console.log(hotels)
+    }
+
     return (
         <View style={styles.container}>
+            <Button
+                title='delete hotels'
+                onPress={deleteHotels}
+            />
+
+            <Button
+                title='create hotels'
+                onPress={createHotels}
+            />
             <View style={{ ...styles.bottomBlock, width, height: height / 4 }}>
                 <Button
                     title='SignOut'

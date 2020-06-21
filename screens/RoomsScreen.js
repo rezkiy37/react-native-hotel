@@ -57,9 +57,24 @@ export function RoomScreen({ navigation, route }) {
 
 
     useEffect(() => {
-        setTimeout(() => {
-            setRooms(route.params.rooms)
-        }, 100)
+        // let mounted = true
+        // let roomsLoading
+
+        // if (mounted) {
+        //     roomsLoading = setInterval(() => {
+
+        //     }, 1000)
+        // }
+
+        // return () => {
+        //     mounted = false
+        //     clearInterval(roomsLoading)
+        // }
+        setRooms(route.params.rooms)
+        return () => {
+            setRooms(null)
+        }
+
     }, [rooms])
 
     return (

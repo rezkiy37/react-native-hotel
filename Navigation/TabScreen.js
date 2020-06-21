@@ -28,10 +28,10 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 options={{
                     //tabBarBadge: 15,
                     tabBarLabel: 'Home',
-                    tabBarIcon: ({ focused, color, fontSize }) => (
+                    tabBarIcon: ({ color }) => (
                         <Ionicons
                             name="ios-home"
-                            style={{ color, fontSize: 20 }}
+                            style={{ color, fontSize: 22 }}
                         />
                     ),
                 }}
@@ -42,9 +42,9 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 component={ProfileStackScreen}
                 options={{
                     tabBarLabel: 'Profile',
-                    tabBarIcon: ({ focused, color, fontSize }) => (
+                    tabBarIcon: ({ color }) => (
                         <Ionicons name="md-person"
-                            style={{ color, fontSize: 20 }}
+                            style={{ color, fontSize: 22 }}
                         />
                     ),
                 }}
@@ -55,10 +55,10 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
                 component={SettingsStackScreen}
                 options={{
                     tabBarLabel: 'Settings',
-                    tabBarIcon: ({ focused, color, fontSize }) => (
+                    tabBarIcon: ({ color }) => (
                         <Ionicons
                             name="md-settings"
-                            style={{ color, fontSize: 20 }}
+                            style={{ color, fontSize: 22 }}
                         />
                     ),
                 }}
