@@ -88,6 +88,7 @@ export default function App() {
   const [loginState, dispatch] = useReducer(loginReducer, initialLoginState)
 
   const authContext = useMemo(() => ({
+
     signIn: async (username, password) => {
       let keys = []
       let item
@@ -239,29 +240,6 @@ export default function App() {
       return loginState.activeUserBalance
     },
 
-
-    // checkState: () => {
-    //   console.log(loginState)
-    // },
-
-    // checkUserByToken: async token => {
-    //   try {
-    //     let user = await AsyncStorage.getItem(token)
-    //     console.log(user)
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // },
-
-    // checkActiveUser: async () => {
-    //   try {
-    //     let user = await AsyncStorage.getItem('activeUser')
-    //     console.log(user)
-    //   } catch (e) {
-    //     console.log(e)
-    //   }
-    // },
-
   }), [loginState])
 
   useEffect(() => {
@@ -293,6 +271,8 @@ export default function App() {
       }
     }, 1000)
   }, [])
+
+
 
   return (
     <AuthContext.Provider value={authContext}>

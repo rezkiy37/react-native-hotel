@@ -15,12 +15,6 @@ export const TabScreen = ({ HomeStackScreen, ProfileStackScreen, SettingsStackSc
             barStyle={{
                 backgroundColor: '#ccc',
             }}
-
-        // tabBarOptions={{
-        //     activeTintColor: 'tomato',
-        //     inactiveTintColor: 'gray',
-        //     : 'red'
-        // }}
         >
             <Tab.Screen
                 name="Home"
